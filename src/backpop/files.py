@@ -1,4 +1,5 @@
 import ast
+import os
 from configparser import ConfigParser
 from .consts import BPP_COLUMNS, BCM_COLUMNS
 
@@ -70,6 +71,19 @@ def parse_inifile(ini_file):
     flags = config_dict["bse"]
     for k, v in flags.items():
         flags[k] = _eval_div_only(ast.parse(v, mode='eval').body)
+    
+    # set SSE flags
+    sse = config_dict["sse"]
+    if sse["stellar_engine"] == "metisse":
+
+        assert os.path.exists(sse["path_to_tracks"]), "path_to_tracks does not exist!"
+        assert os.path.exists(sse["path_to_he_tracks"]), "path_to_he_tracks does not exist!"
+
+        SSEDict = config_dict["sse"]
+        for k, v in SSEDict.items():
+            SSEDict[k] = v
+    else:
+        SSEDict = {'stellar_engine': 'sse'}
 
     # convert ini file inputs to observations, variables, and fixed parameters
     obs = {
@@ -141,4 +155,4 @@ def parse_inifile(ini_file):
     else:
         config["n_bpp_rows"] = 35
 
-    return config, flags, obs, var, fixed
+    return config, flags, SSEDict, obs, var, fixed
