@@ -4,7 +4,7 @@ import pandas as pd
 from scipy.stats import multivariate_normal
 import os.path
 
-from cosmic import _evolvebin
+from cosmic import _evolvebin, evolve
 from nautilus import Prior, Sampler
 
 from .consts import *
@@ -55,7 +55,7 @@ class BackPop():
         self.config_file = config_file
 
         # parse the configuration ini file, set flags and config
-        self.config, self.flags, self.obs, self.var, self.fixed = parse_inifile(self.config_file)
+        self.config, self.flags, self.SSEDict, self.obs, self.var, self.fixed = parse_inifile(self.config_file)
         self.init_flags = self.flags.copy()
         if self.config["verbose"]:
             print(f"Initializing BackPop with {os.path.split(config_file)[-1]}")
@@ -292,9 +292,18 @@ class BackPop():
         phase_table = add_vsys_from_kicks(bcm if self.config["use_bcm"] else bpp, kick_info)
         out = select_phase(phase_table, condition=self.config["phase_condition"])
 
+        # check for MRR
+        obs_out = out[self.obs["out_name"]]
+
+        if obs_out["mass_1"].iloc[0] < obs_out["mass_2"].iloc[0]:
+            m1_col = obs_out.pop("mass_2")
+            m2_col = obs_out.pop("mass_1")
+            obs_out.insert(0, "mass_1", m1_col)
+            obs_out.insert(1, "mass_2", m2_col)
+
         if len(out) > 0:
             # print(f'Found a binary that meets the phase condition! m1={m1:1.2f}, m2={m2:1.2f}, tb={tb:1.2f}, e={e:1.2f}, tphysf={tphysf:1.2f}, vsys_2_total ={out["vsys_2_total"].iloc[0]:1.2f}, teff_2 = {out["teff_2"].iloc[0]:1.2f}, log_lum_2 = {np.log10(out["lum_2"].iloc[0]):1.2f}')
-            return out[self.obs["out_name"]].iloc[0].to_numpy(), bpp.to_numpy(), kick_info.to_numpy(), out.iloc[0].to_numpy() if self.config["use_bcm"] else np.zeros(len(bcm_columns) + 2)
+            return obs_out.iloc[0].to_numpy(), bpp.to_numpy(), kick_info.to_numpy(), out.iloc[0].to_numpy() if self.config["use_bcm"] else np.zeros(len(bcm_columns) + 2)
         else:
             return None, None, None
 
@@ -345,3 +354,32 @@ class BackPop():
                     raise ValueError(f"flag {k} not found in flags dictionary")
                 setattr(getattr(_evolvebin, g), k, self.flags[k])
         return None
+    
+    # def set_SSEDict_flags(self):
+    #     '''
+    #     Set the SSE flags in the _evolvebin Fortran module from a dictionary of flags
+
+    #     Parameters
+    #     ----------
+    #     flags : dict
+    #         Dictionary of SSE flags to be passed to COSMIC
+    #     '''
+    #     z_accuracy_limit = self.SSEDict.get("z_accuracy_limit", 1e-2)
+
+    #     if self.SSEDict["stellar_engine"] == "metisse":
+    #         _evolvebin.se_flags.using_metisse = 1
+    #         _evolvebin.se_flags.using_sse = 0
+
+    #         # check if the metallicity for the initialbinarytable changes
+    #         # raise an error if all the metallicities are not the same
+    #         if 'metallicity' not in self.fixed.keys():
+    #             raise ValueError("All the metallicities in the initial binary table "
+    #                             "must be the same if you are using the METISSE stellar engine.")
+        
+    #     elif self.SSEDict["stellar_engine"] == "sse":
+    #         _evolvebin.se_flags.using_sse = 1
+    #         _evolvebin.se_flags.using_metisse = 0
+
+    #     else:
+    #         _evolvebin.se_flags.using_sse = 1
+    #         _evolvebin.se_flags.using_metisse = 0
