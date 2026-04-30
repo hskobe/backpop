@@ -230,6 +230,7 @@ class BackPop():
         # set the other flags
         self.set_flags(params_in)
         self.set_evolvebin_flags()
+        self.set_SSEDict_flags()
         
         bpp_columns = BPP_COLUMNS
         bcm_columns = BCM_COLUMNS
@@ -265,7 +266,7 @@ class BackPop():
         kick_info = np.zeros((2, 18))
 
         # run COSMIC!
-        [bpp_index, bcm_index, kick_info_arrays] = _evolvebin.evolv2(p["kstar"], p["mass"], tb, e,
+        [zpars, bpp_index, bcm_index, kick_info_arrays] = _evolvebin.evolv2(p["kstar"], p["mass"], tb, e,
                                                                      metallicity, tphysf, dtp, p["mass0"],
                                                                      p["rad"], p["lumin"], p["massc"],
                                                                      p["radc"], p["menv"], p["renv"],
@@ -273,39 +274,41 @@ class BackPop():
                                                                      p["tacc"], p["epoch"], p["tms"],
                                                                      p["bhspin"], tphys, zpars,
                                                                      bkick, kick_info)
-
         
-        bpp = _evolvebin.binary.bpp[:self.config["n_bpp_rows"], :n_col_bpp].copy()
-        _evolvebin.binary.bpp[:bpp_index, :n_col_bpp] = np.zeros((bpp_index, n_col_bpp))
-        
-        bcm = _evolvebin.binary.bcm[:bcm_index, :n_col_bcm].copy()
-        _evolvebin.binary.bcm[:bcm_index, :n_col_bcm] = np.zeros((bcm_index, n_col_bcm))
-        # print(bpp.shape)
-
-        bpp = pd.DataFrame(bpp, columns=bpp_columns) 
-        bcm = pd.DataFrame(bcm, columns=bcm_columns)
-
-        kick_info = pd.DataFrame(kick_info_arrays,
-                                 columns=KICK_COLUMNS,
-                                 index=kick_info_arrays[:, -1].astype(int))
-        
-        phase_table = add_vsys_from_kicks(bcm if self.config["use_bcm"] else bpp, kick_info)
-        out = select_phase(phase_table, condition=self.config["phase_condition"])
-
-        # check for MRR
-        obs_out = out[self.obs["out_name"]]
-
-        if obs_out["mass_1"].iloc[0] < obs_out["mass_2"].iloc[0]:
-            m1_col = obs_out.pop("mass_2")
-            m2_col = obs_out.pop("mass_1")
-            obs_out.insert(0, "mass_1", m1_col)
-            obs_out.insert(1, "mass_2", m2_col)
-
-        if len(out) > 0:
-            # print(f'Found a binary that meets the phase condition! m1={m1:1.2f}, m2={m2:1.2f}, tb={tb:1.2f}, e={e:1.2f}, tphysf={tphysf:1.2f}, vsys_2_total ={out["vsys_2_total"].iloc[0]:1.2f}, teff_2 = {out["teff_2"].iloc[0]:1.2f}, log_lum_2 = {np.log10(out["lum_2"].iloc[0]):1.2f}')
-            return obs_out.iloc[0].to_numpy(), bpp.to_numpy(), kick_info.to_numpy(), out.iloc[0].to_numpy() if self.config["use_bcm"] else np.zeros(len(bcm_columns) + 2)
+        if bpp_index < 0:
+            raise ValueError("Failed in METISSE_zcnsts")
         else:
-            return None, None, None
+            bpp = _evolvebin.binary.bpp[:self.config["n_bpp_rows"], :n_col_bpp].copy()
+            _evolvebin.binary.bpp[:bpp_index, :n_col_bpp] = np.zeros((bpp_index, n_col_bpp))
+            
+            bcm = _evolvebin.binary.bcm[:bcm_index, :n_col_bcm].copy()
+            _evolvebin.binary.bcm[:bcm_index, :n_col_bcm] = np.zeros((bcm_index, n_col_bcm))
+            # print(bpp.shape)
+
+            bpp = pd.DataFrame(bpp, columns=bpp_columns) 
+            bcm = pd.DataFrame(bcm, columns=bcm_columns)
+
+            kick_info = pd.DataFrame(kick_info_arrays,
+                                    columns=KICK_COLUMNS,
+                                    index=kick_info_arrays[:, -1].astype(int))
+            
+            phase_table = add_vsys_from_kicks(bcm if self.config["use_bcm"] else bpp, kick_info)
+            out = select_phase(phase_table, condition=self.config["phase_condition"])
+
+            # check for MRR
+            obs_out = out[self.obs["out_name"]]
+
+            if obs_out["mass_1"].iloc[0] < obs_out["mass_2"].iloc[0]:
+                m1_col = obs_out.pop("mass_2")
+                m2_col = obs_out.pop("mass_1")
+                obs_out.insert(0, "mass_1", m1_col)
+                obs_out.insert(1, "mass_2", m2_col)
+
+            if len(out) > 0:
+                # print(f'Found a binary that meets the phase condition! m1={m1:1.2f}, m2={m2:1.2f}, tb={tb:1.2f}, e={e:1.2f}, tphysf={tphysf:1.2f}, vsys_2_total ={out["vsys_2_total"].iloc[0]:1.2f}, teff_2 = {out["teff_2"].iloc[0]:1.2f}, log_lum_2 = {np.log10(out["lum_2"].iloc[0]):1.2f}')
+                return obs_out.iloc[0].to_numpy(), bpp.to_numpy(), kick_info.to_numpy(), out.iloc[0].to_numpy() if self.config["use_bcm"] else np.zeros(len(bcm_columns) + 2)
+            else:
+                return None, None, None
 
 
     def set_flags(self, params_in):
@@ -355,31 +358,46 @@ class BackPop():
                 setattr(getattr(_evolvebin, g), k, self.flags[k])
         return None
     
-    # def set_SSEDict_flags(self):
-    #     '''
-    #     Set the SSE flags in the _evolvebin Fortran module from a dictionary of flags
+    def set_SSEDict_flags(self):
+        '''
+        Set the SSE flags in the _evolvebin Fortran module from a dictionary of flags
 
-    #     Parameters
-    #     ----------
-    #     flags : dict
-    #         Dictionary of SSE flags to be passed to COSMIC
-    #     '''
-    #     z_accuracy_limit = self.SSEDict.get("z_accuracy_limit", 1e-2)
+        Parameters
+        ----------
+        flags : dict
+            Dictionary of SSE flags to be passed to COSMIC
+        '''
+        z_accuracy_limit = self.SSEDict.get("z_accuracy_limit", 1e-2)
 
-    #     if self.SSEDict["stellar_engine"] == "metisse":
-    #         _evolvebin.se_flags.using_metisse = 1
-    #         _evolvebin.se_flags.using_sse = 0
+        if self.SSEDict["stellar_engine"] == "metisse":
+            _evolvebin.se_flags.using_metisse = 1
+            _evolvebin.se_flags.using_sse = 0
 
-    #         # check if the metallicity for the initialbinarytable changes
-    #         # raise an error if all the metallicities are not the same
-    #         if 'metallicity' not in self.fixed.keys():
-    #             raise ValueError("All the metallicities in the initial binary table "
-    #                             "must be the same if you are using the METISSE stellar engine.")
+            # check if the metallicity for the initialbinarytable changes
+            # raise an error if all the metallicities are not the same
+            if 'metallicity' not in self.fixed.keys():
+                raise ValueError("All the metallicities in the initial binary table "
+                                "must be the same if you are using the METISSE stellar engine.")
+            
+            # load in the METISSE files
+            _ = evolve.read_tracks_for_METISSE(
+                path_to_tracks = self.SSEDict['path_to_tracks'], 
+                IBT_Z = self.fixed["metallicity"],
+                z_accuracy_limit = z_accuracy_limit,
+                is_he = False
+                )
+
+            if (self.SSEDict['path_to_he_tracks'] != ''):
+                _ = evolve.read_tracks_for_METISSE(
+                    path_to_tracks = self.SSEDict['path_to_he_tracks'],
+                    IBT_Z = self.fixed["metallicity"],
+                    z_accuracy_limit = z_accuracy_limit,
+                    is_he = True
+                    )
         
-    #     elif self.SSEDict["stellar_engine"] == "sse":
-    #         _evolvebin.se_flags.using_sse = 1
-    #         _evolvebin.se_flags.using_metisse = 0
+        elif self.SSEDict["stellar_engine"] == "sse":
+            _evolvebin.se_flags.using_sse = 1
+            _evolvebin.se_flags.using_metisse = 0
 
-    #     else:
-    #         _evolvebin.se_flags.using_sse = 1
-    #         _evolvebin.se_flags.using_metisse = 0
+        else:
+            raise ValueError("Use either 'sse' or 'metisse' as stellar engine")
