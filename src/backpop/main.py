@@ -85,9 +85,11 @@ class BackPop():
             filepath = os.path.join(self.config["output_folder"], 'samples_out.hdf5')
         else:
             output_path = os.path.join(os.getcwd(), 'output_folder')
-            os.mkdir(output_path)
-            if self.config["verbose"]:
-                print(f"Created output folder here: {output_path}")
+            # check if output folder exists, if not create it
+            if not os.path.exists(output_path):
+                os.mkdir(output_path)
+                if self.config["verbose"]:
+                    print(f"Created output folder here: {output_path}")
             filepath = os.path.join(output_path, 'samples_out.hdf5')
             
         self.sampler = Sampler(
