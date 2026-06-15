@@ -12,7 +12,7 @@ and allowed value or string. The default settings are noted in the comments.
 COSMIC
 ~~~~~~
 
-Within COSMIC, there is a modified version of BSE needed to run ``cosmic-pop``. The BSEDict has a number of flags that 
+Within COSMIC, there is a modified version of BSE needed to run the code. The BSEDict has a number of flags that 
 allows the user to tailor the binary evolution. 
 
 For your BackPop run, you will need to set up this dictionary. You can do so by clicking the button below. This page 
