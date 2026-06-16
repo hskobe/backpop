@@ -5,6 +5,7 @@
     the various interactive aspects of the page
 
     written by Tom Wagg
+    edited by Hannah Skobe
 */
 
 // once the page loads, run this function
@@ -127,7 +128,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 
 function construct_files() {
-    // construct the strings for the INI file and BSE dictionary
+    // construct the strings for the INI file
     // the span tags are to match the syntax highlighting for pygments
     let ini_file = "<span class='c1'>; BackPop INI file\n</span>"
     let BSE_dict_string = "<span class='p'>BSE_settings </span><span class='o'> = </span><span class='p'>{</span>"

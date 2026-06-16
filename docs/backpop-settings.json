@@ -1,32 +1,36 @@
 [
     {
         "category": "BackPop",
-        "category_label": "BackPop Settings",
-        "category_description": "Settings that filter the data returned by BackPop simulations",
+        "category_label": "Main Settings",
+        "category_description": "Settings that initialize sampler and filter the data returned by BackPop simulations",
         "docs-colour": "cadetblue",
         "settings": [
             {
                 "name": "n_threads",
                 "description": "Sets the number of cores to use in multiprocessing",
                 "type": "number",
-                "options-preface": "",
+                "options-preface": "Used for parallelization of the sampler calculations. Must use a positive integer. If None, no parallelization used.",
                 "options": [
                     {
                         "name": "integer values",
                         "description": "Number of cores"
                     },
                     {
-                        "name": 1,
-                        "description": "For example, this sets the number of cores to 1",
+                        "name": 2,
+                        "description": "For example, this sets the number of cores to 2"
+                    },
+                    {
+                        "name": "",
+                        "description": "Default value (not using multiprocessing)",
                         "default": true
                     }
                 ]
             },
             {
                 "name": "n_eff",
-                "description": "Minimum effective sample size (see <a href='https://nautilus-sampler.readthedocs.io/en/latest/api_full.html#nautilus.sampler.Sampler.run'>n_eff docs</a> for more information)",
+                "description": "Minimum effective sample size (see <a href='https://nautilus-sampler.readthedocs.io/en/latest/api_full.html#nautilus.sampler.Sampler.run'>nautilus docs</a> for more information)",
                 "type": "number",
-                "options-preface": "",
+                "options-preface": "This determines a minimum sample size that needs to be reached for the sampler to converge. However, this does not mean convergence occurs at ``n_eff``.",
                 "options": [
                     {
                         "name": 8000,
@@ -37,9 +41,9 @@
             },
             {
                 "name": "n_live",
-                "description": "Number of live points (see <a href='https://nautilus-sampler.readthedocs.io/en/latest/api_full.html#nautilus.sampler.Sampler>'>n_live docs</a> for more information)",
+                "description": "Number of live points (see <a href='https://nautilus-sampler.readthedocs.io/en/latest/api_full.html#nautilus.sampler.Sampler>'>nautilus docs</a> for more information)",
                 "type": "number",
-                "options-preface": "",
+                "options-preface": "Boundaries are constructed to encompass these live points.",
                 "options": [
                     {
                         "name": 1000,
@@ -84,7 +88,7 @@
             },
             {
                 "name": "resume",
-                "description": "Resumes sampling from previous run (see `resume doc <https://nautilus-sampler.readthedocs.io/en/latest/api_full.html#nautilus.sampler.Sampler>`_",
+                "description": "Resumes sampling from previous run (see <a href='https://nautilus-sampler.readthedocs.io/en/latest/api_full.html#nautilus.sampler.Sampler>'>nautilus docs</a> for more information)",
                 "type": "dropdown",
                 "options-preface": "",
                 "options": [
@@ -100,8 +104,20 @@
                 ]
             },
             {
+                "name": "phase_condition",
+                "description": "Determines evolutionary state(s) of interest",
+                "type": "string",
+                "options-preface": "Can use predefined phases or custom phase to target astrophysical events. See <a href='https://cosmic-popsynth.github.io/COSMIC/pages/config_and_output/output_info.html#output-info'>COSMIC output docs</a> for more information on evolutionary conventions.",
+                "options": [
+                    {
+                        "name": "BH_MS",
+                        "description": "For example, this phase selects binaries with a kstar_1 = 14 & kstar_2 = [0,1] or kstar_1 = [0,1] & kstar_2 = 14."
+                    }
+                ]
+            },
+            {
                 "name": "use_bcm",
-                "description": "Saves BCM from Backpop run (see `bcm doc <https://cosmic-popsynth.github.io/COSMIC/pages/config_and_output/output_info.html#bcm-user-specified-timestep-table>`_",
+                "description": "Saves BCM from Backpop run (see <a href='https://cosmic-popsynth.github.io/COSMIC/pages/config_and_output/output_info.html#bcm-user-specified-timestep-table>'>COSMIC BCM docs</a> for more information)",
                 "type": "dropdown",
                 "options-preface": "",
                 "options": [
@@ -112,6 +128,57 @@
                     {
                         "name": "False",
                         "description": "Does not save BCM from backpop run.",
+                        "default": true
+                    }
+                ]
+            },
+            {
+                "name": "bcm_columns",
+                "description": "Select which columns in the BCM to save",
+                "type": "string",
+                "options-preface": "Must choose columns that are in <a href='https://cosmic-popsynth.github.io/COSMIC/pages/config_and_output/output_info.html#bpp-key-evolutionary-change-table'>COSMIC BCM docs</a>.",
+                "options": [
+                    {
+                        "name": "['tphys', 'kstar_1', 'kstar_2', 'ecc']",
+                        "description": "For example, this phase selects binaries with a kstar_1 = 14 & kstar_2 = [0,1] or kstar_1 = [0,1] & kstar_2 = 14."
+                    },
+                    {
+                        "name": "",
+                        "description": "Default to save all BCM columns if ``use_bcm`` is True.",
+                        "default": true
+                    }
+                ]
+            },
+            {
+                "name": "bpp_columns",
+                "description": "Select which columns in the BPP to save",
+                "type": "string",
+                "options-preface": "Must choose columns that match the observational constraints given. See <a href='https://cosmic-popsynth.github.io/COSMIC/pages/config_and_output/output_info.html#bpp-key-evolutionary-change-table'>COSMIC BPP docs</a> for more information on column names.",
+                "options": [
+                    {
+                        "name": "['mass_1', 'mass_2', 'porb', 'ecc']",
+                        "description": "For example, this phase selects binaries with a kstar_1 = 14 & kstar_2 = [0,1] or kstar_1 = [0,1] & kstar_2 = 14."
+                    },
+                    {
+                        "name": "",
+                        "description": "Default to save all BPP columns.",
+                        "default": true
+                    }
+                ]
+            },
+            {
+                "name": "n_bpp_rows",
+                "description": "Batch size used to label bin_num",
+                "type": "number",
+                "options-preface": "Should choose a batch size that is large enough to encompass one entire binary evolution.",
+                "options": [
+                    {
+                        "name": 25,
+                        "description": "For example, this sets the batch size to be 35 lines of the output"
+                    },
+                    {
+                        "name": "",
+                        "description": "Default value is 35 rows",
                         "default": true
                     }
                 ]

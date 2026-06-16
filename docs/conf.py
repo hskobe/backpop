@@ -22,6 +22,8 @@ sys.path.insert(0, os.path.abspath('.'))
 sys.path.insert(1, os.path.dirname(os.path.abspath(__file__)))
 import hacks
 
+from backpop import __version__ as backpop_version
+
 
 # -- Project information -----------------------------------------------------
 
@@ -99,6 +101,7 @@ exclude_patterns = [
 #
 html_theme = 'sphinx_immaterial'
 html_logo = '_static/tina.png'
+html_title = f'BackPop &thinsp; <em>v{backpop_version}</em>'
 
 html_theme_options = {
 
@@ -169,7 +172,8 @@ html_favicon = "_static/dco_merger.ico"
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
-html_css_files = [("custom.css", {'v': str(int(time.time()))})]
+html_css_files = [("custom.css", {'v': str(int(time.time()))}), 
+                  ("bootstrap-grid.min.css", {'v': str(int(time.time()))})]
 html_js_files = ['custom.js']
 
 # autodocs

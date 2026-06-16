@@ -52,7 +52,7 @@ settings_template = """<div class="setting">
                     </div>
                     <div class="col-3"></d
                 </div>
-                <div class="options-expander">Option details <i class="fa fa-chevron-down""></i></div>
+                <div class="options-expander">Option details <i class="fa fa-chevron-down"></i></div>
                 <div class="row options hide">
                     <p class="options-preface"></p>
                     <ul style="margin-left: 2rem; max-width: calc(100% - 2rem)"></ul>
@@ -112,10 +112,10 @@ for group in settings:
                                                                         'html.parser'))
         
         # add the version added if it's there
-        if "version_added" in setting:
-            if version_is_recent(setting["version_added"]):
-                new_setting.select_one(".version-added").append(bs4.BeautifulSoup(
-                    f"""<span class="badge badge-success version-added"><a class="link-white" href="https://github.com/COSMIC-PopSynth/COSMIC/releases/tag/v{setting['version_added']}">Added in v{setting['version_added']}</a></span>""", 'html.parser'))
+        # if "version_added" in setting:
+        #     if version_is_recent(setting["version_added"]):
+        #         new_setting.select_one(".version-added").append(bs4.BeautifulSoup(
+        #             f"""<span class="badge badge-success version-added"><a class="link-white" href="https://github.com/COSMIC-PopSynth/COSMIC/releases/tag/v{setting['version_added']}">Added in v{setting['version_added']}</a></span>""", 'html.parser'))
 
         # colour the sublinks the same as the border of the group
         new_setting.select_one(".options-expander")["style"] = "color: " + group["docs-colour"] + ";"
@@ -189,11 +189,11 @@ for group in settings:
             new_option_expl.select_one(".opt-val").string = str(option["name"])
             new_option_expl.select_one(".opt-desc").append(bs4.BeautifulSoup(option["description"], 'html.parser'))
 
-            if "version_added" in option:
-                if version_is_recent(option["version_added"]):
-                    new_option_expl.select_one(".opt-badge-cont").append(bs4.BeautifulSoup(
-                        f"""<span class="badge badge-success version-added"><a class="link-white" href="https://github.com/COSMIC-PopSynth/COSMIC/releases/tag/v{option['version_added']}">Added in v{option['version_added']}</a></span>""", 'html.parser'
-                    ))
+            # if "version_added" in option:
+            #     if version_is_recent(option["version_added"]):
+            #         new_option_expl.select_one(".opt-badge-cont").append(bs4.BeautifulSoup(
+            #             f"""<span class="badge badge-success version-added"><a class="link-white" href="https://github.com/COSMIC-PopSynth/COSMIC/releases/tag/v{option['version_added']}">Added in v{option['version_added']}</a></span>""", 'html.parser'
+            #         ))
             new_setting.select_one(".options").ul.append(new_option_expl)
 
         # convert the default options to a string and display it
