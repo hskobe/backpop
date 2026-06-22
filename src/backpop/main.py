@@ -115,7 +115,7 @@ class BackPop():
             likelihood=self.likelihood, 
             n_live=self.config["n_live"], 
             pool=self.config["n_threads"],
-            blobs_dtype=('blob', float, self.BLOB_LENGTH),
+            blobs_dtype=[('blob', float, self.BLOB_LENGTH)],
             filepath=filepath, 
             resume=self.config["resume"]
         )
