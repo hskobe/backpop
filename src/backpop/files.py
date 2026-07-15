@@ -1,7 +1,7 @@
 import ast
 import os
 from configparser import ConfigParser
-from .consts import BPP_COLUMNS, BCM_COLUMNS
+from cosmic.consts import BPP_COLUMNS, BCM_COLUMNS
 
 __all__ = ["parse_inifile"]
 
@@ -66,6 +66,7 @@ def parse_inifile(ini_file):
         and 'bpp_columns' do not include the observable constraints
     """
     config_file = ConfigParser()
+    config_file.optionxform = str 
     config_file.read(ini_file)
     config_dict = {section: dict(config_file.items(section)) for section in config_file.sections()}
 
@@ -90,7 +91,10 @@ def parse_inifile(ini_file):
 
         SSEDict = config_dict["sse"]
         for k, v in SSEDict.items():
-            SSEDict[k] = v
+            if k == 'z_accuracy_limit':
+                SSEDict[k] = float(v)
+            else:
+                SSEDict[k] = v
     else:
         SSEDict = {'stellar_engine': 'sse'}
 
@@ -128,44 +132,29 @@ def parse_inifile(ini_file):
             fixed[fixed_name] = float(config_dict[k]["value"].strip())
 
     # enforce m1 > m2 COSMIC convention
-    if "m1" and "m2" in obs["name"]:
-        if float(config_dict["backpop.obs::m1"]["mean"].strip()) < float(config_dict["backpop.obs::m2"]["mean"].strip()):
-            raise ValueError('m1 must be > m2 by convention. '
-                            'Your observational means are '
-                            f'm1 = {config_dict["backpop.obs::m1"]["mean"]} and m2 = {config_dict["backpop.obs::m2"]["mean"]}.')
+    # if "m1" and "m2" in obs["name"]:
+    #     if float(config_dict["backpop.obs::m1"]["mean"].strip()) < float(config_dict["backpop.obs::m2"]["mean"].strip()):
+    #         raise ValueError('m1 must be > m2 by convention. '
+    #                         'Your observational means are '
+    #                         f'm1 = {config_dict["backpop.obs::m1"]["mean"]} and m2 = {config_dict["backpop.obs::m2"]["mean"]}.')
     
-    if config["bpp_columns"] != "" and config["bpp_columns"].lower() != "none":
-        config["bpp_columns"] = ast.literal_eval(config["bpp_columns"])
-        # check bpp_columns names are found in BPP_COLUMNS
-        for k in config["bpp_columns"]:
-            if k not in BPP_COLUMNS:
-                raise ValueError(f'Invalid column name: {k}. '
-                                 f'Not found in BPP columns: {BPP_COLUMNS}')
-
-        # check bpp_columns includes observables
-        for k in obs["out_name"]:
-            if k not in config["bpp_columns"]:
-                raise ValueError(f'Missing column: {k}. You must provide BPP column names '
-                                 f'that match observables: {obs["out_name"]}')
-    else:
-        config["bpp_columns"] = BPP_COLUMNS
-        
-    if config["use_bcm"] == "true":
-        if config["bcm_columns"] != "" and config["bcm_columns"].lower() != "none":
-            # check bcm_columns names are found in BCM_COLUMNS
-            config["bcm_columns"] = ast.literal_eval(config["bcm_columns"])
-            for k in config["bcm_columns"]:
-                if k not in BCM_COLUMNS:
-                    raise ValueError(f'Invalid column name: {k}. '
-                                     f'Not found in BCM columns: {BCM_COLUMNS}')
-
-            # check bcm_columns includes observables
-            for k in obs["out_name"]:
-                if k not in config["bcm_columns"]:
-                    raise ValueError(f'Missing column: {k}. You must provide BCM column names '
+    for col_key, col_defaults, col_type in [("bpp_columns", BPP_COLUMNS, "BPP"),
+                                            ("bcm_columns", BCM_COLUMNS, "BCM")]:
+        if config[col_key] != "" and config[col_key].lower() != "none":
+            config[col_key] = ast.literal_eval(config[col_key])
+            # check column names are found in the appropriate columns
+            for col in config[col_key]:
+                if col not in col_defaults:
+                    raise ValueError(f'Invalid column name: {col}. '
+                                     f'Not found in {col_type} columns: {col_defaults}')
+                
+            # check columns include observables
+            for obs_name in obs["out_name"]:
+                if obs_name not in config[col_key]:
+                    raise ValueError(f'Missing column: {obs_name}. You must provide {col_type} column names '
                                      f'that match observables: {obs["out_name"]}')
         else:
-            config["bcm_columns"] = BCM_COLUMNS
+            config[col_key] = col_defaults
     
     if config["n_bpp_rows"] != "" and config["n_bpp_rows"].lower() != "none":
         config["n_bpp_rows"] = int(config["n_bpp_rows"])

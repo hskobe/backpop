@@ -46,7 +46,7 @@ dependencies = [
     "sphinx-copybutton",
     "meson",
     "nautilus-sampler",
-    "cosmic-popsynth"
+    "cosmic-popsynth >= 4.1, < 4.2",
 ]
 
 # add optional dependencies for docs
@@ -64,7 +64,11 @@ docs = [
 
 
 [project.urls]
-"Repository" = "https://github.com/TomWagg/backpop"
+"Repository" = "https://github.com/backpop/backpop"
 
 [project.scripts]
 backpop = "backpop.cli:main"
+
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
