@@ -1,9 +1,9 @@
 [
     {
-        "category": "BackPop",
+        "category": "settings",
         "category_label": "Main Settings",
         "category_description": "Settings that initialize sampler and filter the data returned by BackPop simulations",
-        "docs-colour": "cadetblue",
+        "docs-colour": "#5F9EA0",
         "settings": [
             {
                 "name": "n_threads",
@@ -70,7 +70,7 @@
                 ]
             },
             {
-                "name": "output folder",
+                "name": "output_folder",
                 "description": "Path to save output files. If not supplied, output folder created in directory BackPop is run.",
                 "type": "string",
                 "options-preface": "",
@@ -112,6 +112,11 @@
                     {
                         "name": "BH_MS",
                         "description": "For example, this phase selects binaries with a kstar_1 = 14 & kstar_2 = [0,1] or kstar_1 = [0,1] & kstar_2 = 14."
+                    },
+                    {
+                        "name": "",
+                        "description": "Default does not filter for any condition.",
+                        "default": true
                     }
                 ]
             },
@@ -177,7 +182,7 @@
                         "description": "For example, this sets the batch size to be 35 lines of the output"
                     },
                     {
-                        "name": "",
+                        "name": 35,
                         "description": "Default value is 35 rows",
                         "default": true
                     }
@@ -189,7 +194,7 @@
         "category": "observables",
         "category_label": "Observables",
         "category_description": "Settings that change how the initial binary population is sampled",
-        "docs-colour": "darkseagreen",
+        "docs-colour": "#6BABA0",
         "settings": [
             {
                 "name": "sampling_method",
@@ -210,7 +215,7 @@
         "category": "priors",
         "category_label": "Priors",
         "category_description": "Settings that control the convergence of the simulation run with cosmic-pop",
-        "docs-colour": "#a873dd",
+        "docs-colour": "#78B8A0",
         "settings": [
             {
                 "name": "convergence_params",
@@ -231,7 +236,7 @@
         "category": "sse", 
         "category_label": "Single star evolution",
         "category_description": "Settings that control the single star evolution in the simulation",
-        "docs-colour": "lightsteelblue",
+        "docs-colour": "#8FBC8F",
         "settings": [
             {
                 "name": "stellar_engine",

@@ -99,58 +99,35 @@ exclude_patterns = [
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = 'sphinx_immaterial'
-html_logo = '_static/tina.png'
-html_title = f'BackPop &thinsp; <em>v{backpop_version}</em>'
+html_theme = 'furo'
+html_logo = '_static/gif_logo.js'
+html_title = f'BackPop v{backpop_version}'
 
 html_theme_options = {
-
-    "features": [
-        'content.code.copy',
-        'content.tooltips',
-        'navigation.expand',
-        'navigation.footer',
-        'header.autohide',
-    ],
-
-    "palette": [
+    "source_repository": "https://github.com/backpop/backpop",
+    "source_branch": "main",
+    "source_directory": "docs/",
+    "light_css_variables": {
+        "color-brand-primary": "#1e446e",
+        "color-brand-content": "#1e446e",
+        "color-brand-visited": "#1e446e",
+        "color-api-name": "#1e446e",
+        "color-api-pre-name": "#1e446e"
+    },
+    "dark_css_variables": {
+        "color-brand-primary": "#0070c0",
+        "color-brand-content": "#0070c0",
+        "color-brand-visited": "#0070c0",
+        "color-api-name": "#0070c0",
+        "color-api-pre-name": "#0070c0"
+    },
+    "sidebar_hide_name": False,
+    "footer_icons": [
         {
-            "media": "(prefers-color-scheme: light)",
-            "scheme": "default",
-            "primary": "indigo",
-            "accent": "red",
-            "toggle": {
-                "icon": "material/weather-sunny",
-                "name": "Switch to dark mode",
-            },
-        },
-        {
-            "media": "(prefers-color-scheme: dark)",
-            "scheme": "slate",
-            "primary": "indigo",
-            "accent": "red",
-            "toggle": {
-                "icon": "material/weather-night",
-                "name": "Switch to light mode",
-            },
-        },
-    ],
-
-    # Set the repo location to get a badge with stats
-    'repo_url': 'https://github.com/backpop/backpop',
-
-    'version_dropdown': False,
-    'toc_title_is_page_title': True,
-
-    "social": [
-        {
-            "icon": "fontawesome/brands/github",
-            "link": "https://github.com/backpop/backpop",
-            "name": "Source on github.com",
-        },
-        {
-            "icon": "fontawesome/brands/python",
-            "link": "https://pypi.org/project/backpop/",
+            "name": "GitHub",
+            "url": "https://github.com/backpop/backpop",
+            "html": "",
+            "class": "fa-brands fa-solid fa-github fa-2x",
         },
     ],
 }
@@ -159,22 +136,15 @@ html_last_updated_fmt = "%Y %b %d at %H:%M:%S UTC"
 html_show_sourcelink = False
 html_favicon = "_static/dco_merger.ico"
 
-# html_sidebars = {
-#     "*": ["sidebar-nav-bs.html"],
-#     "index": [],
-#     "pages/install": ["page-toc"],
-#     "pages/getting_started": ["page-toc"],
-#     "pages/tutorials": [],
-#     "pages/cite": []
-# }
-
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
-html_css_files = [("custom.css", {'v': str(int(time.time()))}), 
+html_css_files = ['https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css',
+                  ("custom_2.css", {'v': str(int(time.time()))}), 
                   ("bootstrap-grid.min.css", {'v': str(int(time.time()))})]
-html_js_files = ['custom.js']
+html_js_files = ['custom.js', 'gif_logo.js']
+templates_path = ['_templates'] 
 
 # autodocs
 autoclass_content = "both"
