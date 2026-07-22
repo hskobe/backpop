@@ -8,7 +8,6 @@ Submodules
    :maxdepth: 4
 
    backpop.cli
-   backpop.consts
    backpop.files
    backpop.main
    backpop.phase
