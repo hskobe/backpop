@@ -91,7 +91,10 @@ class BackPop():
         self.BCM_ROW_FLAT_LENGTH = len(self.config["bcm_columns"]) + len(EXTRA_PHASE_TABLE_COLS)
         self.BLOB_LENGTH = self.BPP_FLAT_LENGTH + self.KICK_INFO_FLAT_LENGTH + self.BCM_ROW_FLAT_LENGTH
         self.INVALID_LIKELIHOOD = (-np.inf, np.full(self.BLOB_LENGTH, np.nan, dtype=float))
-        
+
+        # METISSE tracks are loaded once (see set_SSEDict_flags) rather than on every likelihood call
+        self._metisse_tracks_loaded = False
+
     
     def run_sampler(self):
         """Run the Nautilus sampler to sample the joint distribution of initial binary parameters
@@ -109,7 +112,14 @@ class BackPop():
                 if self.config["verbose"]:
                     print(f"Created output folder here: {output_path}")
             filepath = os.path.join(output_path, 'samples_out.hdf5')
-            
+
+        # load METISSE tracks (if needed) here, in the parent process, before the
+        # worker pool below forks its processes. This way every worker inherits the
+        # already-loaded tracks via copy-on-write instead of each one loading its own
+        # copy from scratch on its first (and, without the guard in set_SSEDict_flags,
+        # every subsequent) likelihood call.
+        self.set_SSEDict_flags()
+
         self.sampler = Sampler(
             prior=self.prior, 
             likelihood=self.likelihood, 
@@ -412,22 +422,27 @@ class BackPop():
                 raise ValueError("All the metallicities in the initial binary table "
                                 "must be the same if you are using the METISSE stellar engine.")
             
-            # load in the METISSE files
-            _ = evolve.read_tracks_for_METISSE(
-                path_to_tracks = self.SSEDict['path_to_tracks'], 
-                IBT_Z = self.fixed["metallicity"],
-                z_accuracy_limit = z_accuracy_limit,
-                is_he = False
-                )
-
-            if (self.SSEDict['path_to_he_tracks'] != ''):
+            # load in the METISSE files, once. Loading them on every call is wasteful
+            # (re-reads track files from disk and reallocates the fortran-side arrays
+            # every likelihood evaluation) and, worse, defeats copy-on-write sharing
+            # across multiprocessing workers if it happens post-fork instead of before.
+            if not self._metisse_tracks_loaded:
                 _ = evolve.read_tracks_for_METISSE(
-                    path_to_tracks = self.SSEDict['path_to_he_tracks'],
+                    path_to_tracks = self.SSEDict['path_to_tracks'],
                     IBT_Z = self.fixed["metallicity"],
                     z_accuracy_limit = z_accuracy_limit,
-                    is_he = True
+                    is_he = False
                     )
-        
+
+                if (self.SSEDict['path_to_he_tracks'] != ''):
+                    _ = evolve.read_tracks_for_METISSE(
+                        path_to_tracks = self.SSEDict['path_to_he_tracks'],
+                        IBT_Z = self.fixed["metallicity"],
+                        z_accuracy_limit = z_accuracy_limit,
+                        is_he = True
+                        )
+                self._metisse_tracks_loaded = True
+
         elif self.SSEDict["stellar_engine"] == "sse":
             _evolvebin.se_flags.using_sse = 1
             _evolvebin.se_flags.using_metisse = 0
