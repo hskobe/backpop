@@ -6,45 +6,6 @@
 
     written by Tom Wagg
     edited by Hannah Skobe
-
-    --------------------------------------------------------------------
-    SUBCATEGORY SCHEMA (added for Observables/Priors, see
-    backpop-settings.json and create_settings_html.py)
-    --------------------------------------------------------------------
-    Subsections within a category are marked with a "settings-section"
-    key placed directly on the FIRST setting object of that subgroup
-    (this is the same convention already used for the BSE dictionary,
-    e.g. "Common envelope"). It is a flat marker, not a nested object:
-
-        {
-            "settings-section": "Primary Mass",   // starts a new subsection
-            "settings-section-description": "...",// optional, e.g. intro text
-            "name": "mass_1 mean",                // this setting is ALSO
-            "description": "...",                 // rendered normally, it
-            "type": "number",                     // just happens to open a
-            "options-preface": "",                // new section first
-            "options": [ ... ]
-        },
-        {
-            "name": "mass_1 sigma",   // subsequent settings in the group
-            ...                       // are plain setting objects, no marker
-        }
-
-    create_settings_html.py reads this: whenever "settings-section" is
-    present on a setting, it prepends a ".settings-section" wrapper with
-    an <h2 id="..."> (id = the label, lowercased with spaces -> hyphens)
-    before rendering that setting as usual. Observables now uses this
-    for Primary Mass / Secondary Mass / Orbital Period / Eccentricity /
-    Metallicity / Evolution Time, and Priors uses it for Primary Mass /
-    Secondary Mass / Orbital Period / Eccentricity.
-
-    Nothing below needs to change to support this - construct_files()
-    already walks every ".settings-section" it finds and writes out a
-    comment-block subheading using that h2's text, and the TOC hack
-    below looks at ANY category's .settings-section elements (not just
-    "Binary Physics"), so these new subcategories automatically get
-    nested TOC entries and INI-file section headers.
-    --------------------------------------------------------------------
 */
 
 // once the page loads, run this function
@@ -79,45 +40,19 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 
-    // hack the TOC on the right to include the subheadings from ANY category that
-    // uses .settings-section subcategories (e.g. "Binary Physics" -> BSE dict
-    // sections, or "Observables"/"Priors" -> Primary Mass, Secondary Mass, etc.)
-    //
-    // this used to be hard-coded to only look for "binary physics", but the
-    // Observables/Priors categories now use the same .settings-section pattern
-    // for their subcategories (Primary Mass, Secondary Mass, Orbital Period,
-    // Eccentricity, Metallicity, Evolution Time), so we generalise it here to
-    // work for every top-level TOC entry that has a matching .setting-card
+    // hack the TOC on the right to include the subheadings from the BSE settings sections
     const lis = document.querySelectorAll(".toc-drawer li");
+    const bse_subheadings = document.querySelectorAll(".settings-section h2");
     for (let li of lis) {
-        // find the setting-card whose header matches this TOC entry's text
-        // (case-insensitive, since category_label casing may differ from the
-        // rendered <a> text depending on the theme)
-        const matching_cards = document.querySelectorAll(".card.setting-card");
-        let matching_card = null;
-        for (let card of matching_cards) {
-            // compare against just the category title (.setting-group-title),
-            // not the whole .card-header, since the header also contains the
-            // category_description paragraph which would break an exact match
-            const header = card.querySelector(".setting-group-title");
-            if (header && header.innerText.trim().toLowerCase() == li.innerText.trim().toLowerCase()) {
-                matching_card = card;
-                break;
+        if (li.innerText.toLowerCase() == "binary physics") {
+            new_ul = document.createElement("ul");
+            for (let subheading of bse_subheadings) {
+                new_li = document.createElement("li");
+                new_li.innerHTML = `<a class="reference internal" href="#${subheading.id}">${subheading.innerText}</a>`;
+                new_ul.appendChild(new_li);
             }
+            li.appendChild(new_ul);
         }
-        if (!matching_card) continue;
-
-        // only that card's own subsections (not every subsection on the page)
-        const subheadings = matching_card.querySelectorAll(".settings-section h2");
-        if (subheadings.length == 0) continue;
-
-        const new_ul = document.createElement("ul");
-        for (let subheading of subheadings) {
-            const new_li = document.createElement("li");
-            new_li.innerHTML = `<a class="reference internal" href="#${subheading.id}">${subheading.innerText}</a>`;
-            new_ul.appendChild(new_li);
-        }
-        li.appendChild(new_ul);
     }
 
     // update hidden inputs based on the checkbox choices anytime one of them in a group is clicked

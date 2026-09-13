@@ -46,7 +46,7 @@ group_template = """<section class="card setting-card">
 settings_template = """<div class="setting">
                 <div class="row align-items-center setting-chooser">
                     <div class="col-9">
-                        <div class='name-cont'><h3 class="name"><code></code></h3><span class="version-added"></span></div>
+                        <div class='name-cont'><h4 class="name"><code></code></h4><span class="version-added"></span></div>
                         <p class="description"></p>
                         <p class="default"></p>
                     </div>
@@ -91,7 +91,7 @@ for group in settings:
             settings_section = new_group.new_tag("div")
             settings_section["class"] = "settings-section"
 
-            header = new_group.new_tag("h2")
+            header = new_group.new_tag("h3")
             header["id"] = setting["settings-section"].lower().replace(" ", "-")
             header.string = setting["settings-section"]
 

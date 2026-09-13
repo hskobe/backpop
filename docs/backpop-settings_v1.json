@@ -28,7 +28,7 @@
             },
             {
                 "name": "n_eff",
-                "description": "Minimum effective sample size (see <a href='https://nautilus-sampler.readthedocs.io/en/latest/api_full.html#nautilus.sampler.Sampler.run'>nautilus docs</a>)",
+                "description": "Minimum effective sample size (see <a href='https://nautilus-sampler.readthedocs.io/en/latest/api_full.html#nautilus.sampler.Sampler.run'>nautilus docs</a> for more information)",
                 "type": "number",
                 "options-preface": "This determines a minimum sample size that needs to be reached for the sampler to converge. However, this does not mean convergence occurs at ``n_eff``.",
                 "options": [
@@ -41,7 +41,7 @@
             },
             {
                 "name": "n_live",
-                "description": "Number of live points (see <a href='https://nautilus-sampler.readthedocs.io/en/latest/api_full.html#nautilus.sampler.Sampler>'>nautilus docs</a>)",
+                "description": "Number of live points (see <a href='https://nautilus-sampler.readthedocs.io/en/latest/api_full.html#nautilus.sampler.Sampler>'>nautilus docs</a> for more information)",
                 "type": "number",
                 "options-preface": "Boundaries are constructed to encompass these live points.",
                 "options": [
@@ -88,7 +88,7 @@
             },
             {
                 "name": "resume",
-                "description": "Resumes sampling from previous run (see <a href='https://nautilus-sampler.readthedocs.io/en/latest/api_full.html#nautilus.sampler.Sampler>'>nautilus docs</a>)",
+                "description": "Resumes sampling from previous run (see <a href='https://nautilus-sampler.readthedocs.io/en/latest/api_full.html#nautilus.sampler.Sampler>'>nautilus docs</a> for more information)",
                 "type": "dropdown",
                 "options-preface": "",
                 "options": [
@@ -107,7 +107,7 @@
                 "name": "phase_condition",
                 "description": "Determines evolutionary state(s) of interest",
                 "type": "string",
-                "options-preface": "Can use predefined phases or custom phase to target astrophysical events. See <a href='https://cosmic-popsynth.github.io/COSMIC/pages/config_and_output/output_info.html#output-info'>COSMIC output docs</a> for information on evolutionary conventions.",
+                "options-preface": "Can use predefined phases or custom phase to target astrophysical events. See <a href='https://cosmic-popsynth.github.io/COSMIC/pages/config_and_output/output_info.html#output-info'>COSMIC output docs</a> for more information on evolutionary conventions.",
                 "options": [
                     {
                         "name": "BH_MS",
@@ -122,7 +122,7 @@
             },
             {
                 "name": "use_bcm",
-                "description": "Saves BCM from Backpop run (see <a href='https://cosmic-popsynth.github.io/COSMIC/pages/config_and_output/output_info.html#bcm-user-specified-timestep-table>'>COSMIC BCM docs</a>)",
+                "description": "Saves BCM from Backpop run (see <a href='https://cosmic-popsynth.github.io/COSMIC/pages/config_and_output/output_info.html#bcm-user-specified-timestep-table>'>COSMIC BCM docs</a> for more information)",
                 "type": "dropdown",
                 "options-preface": "",
                 "options": [
@@ -158,7 +158,7 @@
                 "name": "bpp_columns",
                 "description": "Select which columns in the BPP to save",
                 "type": "string",
-                "options-preface": "Must choose columns that match the observational constraints given. See <a href='https://cosmic-popsynth.github.io/COSMIC/pages/config_and_output/output_info.html#bpp-key-evolutionary-change-table'>COSMIC BPP docs</a> for column names.",
+                "options-preface": "Must choose columns that match the observational constraints given. See <a href='https://cosmic-popsynth.github.io/COSMIC/pages/config_and_output/output_info.html#bpp-key-evolutionary-change-table'>COSMIC BPP docs</a> for more information on column names.",
                 "options": [
                     {
                         "name": "['mass_1', 'mass_2', 'porb', 'ecc']",
@@ -193,36 +193,36 @@
     {
         "category": "observables",
         "category_label": "Observables",
-        "category_description": "Observational measurements of an individual binary",
+        "category_description": "Observational measurements of an individual binary in solar masses",
         "docs-colour": "#6BABA0",
         "settings": [
             {
-                "settings-section": "Primary Mass",
-                "name": "mean",
+                "name": "mass_1 mean",
                 "description": "Observed mass of the primary in solar masses",
                 "type": "number",
                 "options-preface": "",
                 "options": [
                     {
                         "name": 10,
-                        "description": "For example, this sets the mass to 10 Msun"
+                        "description": "For example, this sets the mass to 10 M_sun"
                     },
                     {
                         "name": "",
                         "description": "Default value",
                         "default": true
                     }
+
                 ]
-            },
+            },    
             {
-                "name": "sigma",
+                "name": "mass_1 sigma",
                 "description": "Uncertainity of the observed mass of the primary in solar masses",
                 "type": "number",
                 "options-preface": "",
                 "options": [
                     {
                         "name": 2,
-                        "description": "For example, this sets the sigma to 2 Msun"
+                        "description": "For example, this sets the sigma to 2 M_sun"
                     },
                     {
                         "name": "",
@@ -232,28 +232,14 @@
                 ]
             },
             {
-                "name": "out_name",
-                "description": "Column name used to store the primary mass observable in the output files",
-                "type": "string",
-                "options-preface": "Must match a column name in the BPP/BCM output (see <a href='https://cosmic-popsynth.github.io/COSMIC/pages/config_and_output/output_info.html#bpp-key-evolutionary-change-table'>COSMIC docs</a>).",
-                "options": [
-                    {
-                        "name": "mass_1",
-                        "description": "For example, this compares the observable against the mass_1 column",
-                        "default": true
-                    }
-                ]
-            },
-            {
-                "settings-section": "Secondary Mass",
-                "name": "mean",
+                "name": "mass_2 mean",
                 "description": "Observed mass of the secondary in solar masses",
                 "type": "number",
                 "options-preface": "",
                 "options": [
                     {
                         "name": 10,
-                        "description": "For example, this sets the mass to 10 Msun"
+                        "description": "For example, this sets the mass to 10 M_sun"
                     },
                     {
                         "name": "",
@@ -263,14 +249,14 @@
                 ]
             },
             {
-                "name": "sigma",
+                "name": "mass_2 sigma",
                 "description": "Uncertainity of the observed mass of the secondary in solar masses",
                 "type": "number",
                 "options-preface": "",
                 "options": [
                     {
                         "name": 2,
-                        "description": "For example, this sets the sigma to 2 Msun"
+                        "description": "For example, this sets the sigma to 2 M_sun"
                     },
                     {
                         "name": "",
@@ -280,21 +266,7 @@
                 ]
             },
             {
-                "name": "out_name",
-                "description": "Column name used to store the secondary mass observable in the output files",
-                "type": "string",
-                "options-preface": "Must match a column name in the BPP/BCM output (see <a href='https://cosmic-popsynth.github.io/COSMIC/pages/config_and_output/output_info.html#bpp-key-evolutionary-change-table'>COSMIC docs</a>).",
-                "options": [
-                    {
-                        "name": "mass_2",
-                        "description": "For example, this compares the observable against the mass_2 column",
-                        "default": true
-                    }
-                ]
-            },
-            {
-                "settings-section": "Orbital Period",
-                "name": "mean",
+                "name": "porb mean",
                 "description": "Observed orbital period in days",
                 "type": "number",
                 "options-preface": "",
@@ -311,7 +283,7 @@
                 ]
             },
             {
-                "name": "sigma",
+                "name": "porb sigma",
                 "description": "Uncertainty of the observed orbital period in days",
                 "type": "number",
                 "options-preface": "",
@@ -328,21 +300,7 @@
                 ]
             },
             {
-                "name": "out_name",
-                "description": "Column name used to store the orbital period observable in the output files",
-                "type": "string",
-                "options-preface": "Must match a column name in the BPP/BCM output (see <a href='https://cosmic-popsynth.github.io/COSMIC/pages/config_and_output/output_info.html#bpp-key-evolutionary-change-table'>COSMIC docs</a>).",
-                "options": [
-                    {
-                        "name": "porb",
-                        "description": "For example, this compares the observable against the porb column",
-                        "default": true
-                    }
-                ]
-            },
-            {
-                "settings-section": "Eccentricity",
-                "name": "mean",
+                "name": "ecc mean",
                 "description": "Observed eccentricity",
                 "type": "number",
                 "options-preface": "",
@@ -359,7 +317,7 @@
                 ]
             },
             {
-                "name": "sigma",
+                "name": "ecc sigma",
                 "description": "Uncertainity of the observed eccentricity",
                 "type": "number",
                 "options-preface": "",
@@ -374,200 +332,24 @@
                         "default": true
                     }
                 ]
-            },
-            {
-                "name": "out_name",
-                "description": "Column name used to store the eccentricity observable in the output files",
-                "type": "string",
-                "options-preface": "Must match a column name in the BPP/BCM output (see <a href='https://cosmic-popsynth.github.io/COSMIC/pages/config_and_output/output_info.html#bpp-key-evolutionary-change-table'>COSMIC docs</a>).",
-                "options": [
-                    {
-                        "name": "ecc",
-                        "description": "For example, this compares the observable against the ecc column",
-                        "default": true
-                    }
-                ]
-            },
-            {
-                "settings-section": "Metallicity",
-                "name": "metallicity value",
-                "description": "Observed (or assumed) metallicity of the binary, in absolute units (Z). Metallicity can be fixed or varied. If varied, follow the scheme as above. When using METISSE, metallicity value must match those of the stellar tracks.",
-                "type": "number",
-                "options-preface": "",
-                "options": [
-                    {
-                        "name": 0.02,
-                        "description": "For example, this sets the metallicity to solar (Z = 0.02)"
-                    },
-                    {
-                        "name": "",
-                        "description": "Default value",
-                        "default": true
-                    }
-                ]
-            },
-            {
-                "settings-section": "Evolution Time",
-                "name": "tphys value",
-                "description": "Observed (or assumed) evolutionary time of the binary in Myr",
-                "type": "number",
-                "options-preface": "",
-                "options": [
-                    {
-                        "name": 10000,
-                        "description": "For example, this sets the evolution time to 10000 Myr"
-                    },
-                    {
-                        "name": "",
-                        "description": "Default value",
-                        "default": true
-                    }
-                ]
             }
         ]
     },
     {
         "category": "priors",
         "category_label": "Priors",
-        "category_description": "The prior boundaries placed on each observable",
+        "category_description": "Settings that control the convergence of the simulation run with cosmic-pop",
         "docs-colour": "#78B8A0",
         "settings": [
             {
-                "settings-section": "Primary Mass",
-                "name": "min",
-                "description": "Minimum allowed value of the primary mass prior, in solar masses",
-                "type": "number",
+                "name": "convergence_params",
+                "description": "A list of parameters you would like to verify have converged to a single distribution shape when running cosmic-pop from the command line.",
+                "type": "checkbox",
                 "options-preface": "",
                 "options": [
                     {
-                        "name": 5,
-                        "description": "For example, this sets the minimum primary mass to 5 Msun"
-                    },
-                    {
-                        "name": "",
-                        "description": "Default value",
-                        "default": true
-                    }
-                ]
-            },
-            {
-                "name": "max",
-                "description": "Maximum allowed value of the primary mass prior, in solar masses",
-                "type": "number",
-                "options-preface": "",
-                "options": [
-                    {
-                        "name": 150,
-                        "description": "For example, this sets the maximum primary mass to 150 Msun"
-                    },
-                    {
-                        "name": "",
-                        "description": "Default value",
-                        "default": true
-                    }
-                ]
-            },
-            {
-                "settings-section": "Secondary Mass",
-                "name": "min",
-                "description": "Minimum allowed value of the secondary mass prior, in solar masses",
-                "type": "number",
-                "options-preface": "",
-                "options": [
-                    {
-                        "name": 0.1,
-                        "description": "For example, this sets the minimum secondary mass to 0.1 Msun"
-                    },
-                    {
-                        "name": "",
-                        "description": "Default value",
-                        "default": true
-                    }
-                ]
-            },
-            {
-                "name": "max",
-                "description": "Maximum allowed value of the secondary mass prior, in solar masses",
-                "type": "number",
-                "options-preface": "",
-                "options": [
-                    {
-                        "name": 150,
-                        "description": "For example, this sets the maximum secondary mass to 150 Msun"
-                    },
-                    {
-                        "name": "",
-                        "description": "Default value",
-                        "default": true
-                    }
-                ]
-            },
-            {
-                "settings-section": "Orbital Period",
-                "name": "min",
-                "description": "Minimum allowed value of the orbital period prior, in days",
-                "type": "number",
-                "options-preface": "",
-                "options": [
-                    {
-                        "name": 0.1,
-                        "description": "For example, this sets the minimum orbital period to 0.1 days"
-                    },
-                    {
-                        "name": "",
-                        "description": "Default value",
-                        "default": true
-                    }
-                ]
-            },
-            {
-                "name": "max",
-                "description": "Maximum allowed value of the orbital period prior, in days",
-                "type": "number",
-                "options-preface": "",
-                "options": [
-                    {
-                        "name": 10000,
-                        "description": "For example, this sets the maximum orbital period to 10000 days"
-                    },
-                    {
-                        "name": "",
-                        "description": "Default value",
-                        "default": true
-                    }
-                ]
-            },
-            {
-                "settings-section": "Eccentricity",
-                "name": "min",
-                "description": "Minimum allowed value of the eccentricity prior",
-                "type": "number",
-                "options-preface": "",
-                "options": [
-                    {
-                        "name": 0,
-                        "description": "For example, this sets the minimum eccentricity to 0 (circular)"
-                    },
-                    {
-                        "name": "",
-                        "description": "Default value",
-                        "default": true
-                    }
-                ]
-            },
-            {
-                "name": "max",
-                "description": "Maximum allowed value of the eccentricity prior",
-                "type": "number",
-                "options-preface": "",
-                "options": [
-                    {
-                        "name": 1,
-                        "description": "For example, this sets the maximum eccentricity to 1"
-                    },
-                    {
-                        "name": "",
-                        "description": "Default value",
+                        "name": "mass_1",
+                        "description": "Primary mass",
                         "default": true
                     }
                 ]

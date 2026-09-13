@@ -73,11 +73,24 @@ INI file
 Use the button below to toggle whether to include explanatory comments in the INI file.
 
 .. raw:: html
+
     <button id="ini-file-comments" type="button" class="btn btn-toggle">Show comments</button>
 
 .. code-block:: ini
 
     backpop_ini
+
+.. raw:: html
+
+    <div id="hide-this-maths">
+
+.. math::
+
+    x = y
+
+.. raw:: html
+
+    </div>
 
 .. raw:: html
 
