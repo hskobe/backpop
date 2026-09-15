@@ -4,7 +4,8 @@ Home
 .. raw:: html
 
     <div style="text-align:center; padding-top: 1rem">
-        <img src="_static/backpop_logo.png" alt="BackPop Logo" style='width:100%; max-width:850px'>
+        <img src="_static/img/backpop_logo_light.png" alt="BackPop Logo" class="only-light" style='width:100%; max-width:900px'>
+        <img src="_static/img/backpop_logo_dark.png" alt="BackPop Logo" class="only-dark" style='width:100%; max-width:900px'>
         <h4>A tool to sample the joint distributions of initial binary parameters and binary interaction assumptions</h4>
     </div>
 
@@ -20,7 +21,7 @@ Home
     </div>
 
 .. toctree::
-   :maxdepth: 10
+   :maxdepth: 5
    :hidden:
 
    pages/install

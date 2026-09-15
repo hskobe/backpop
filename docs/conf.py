@@ -100,7 +100,7 @@ exclude_patterns = [
 # a list of builtin themes.
 #
 html_theme = 'furo'
-html_logo = '_static/gif_logo.js'
+html_logo = '_static/custom.js'
 html_title = f'BackPop v{backpop_version}'
 
 html_theme_options = {
@@ -134,16 +134,16 @@ html_theme_options = {
 
 html_last_updated_fmt = "%Y %b %d at %H:%M:%S UTC"
 html_show_sourcelink = False
-html_favicon = "_static/dco_merger.ico"
+html_favicon = "_static/img/dco_merger.ico"
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
 html_css_files = ['https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css',
-                  ("custom_clean.css", {'v': str(int(time.time()))}), 
+                  ("custom_clean.css", {'v': str(int(time.time()))}),
                   ("bootstrap-grid.min.css", {'v': str(int(time.time()))})]
-html_js_files = ['custom.js', 'gif_logo.js']
+html_js_files = ['custom.js']
 templates_path = ['_templates'] 
 
 # autodocs
