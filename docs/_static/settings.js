@@ -18,8 +18,14 @@ document.addEventListener("DOMContentLoaded", function() {
     document.querySelectorAll(".options-expander").forEach(expander => {
         expander.addEventListener("click", function() {
             expander.parentElement.querySelector(".options").classList.toggle("hide");
-            expander.querySelector(".fa").classList.toggle("fa-chevron-down");
-            expander.querySelector(".fa").classList.toggle("fa-chevron-up");
+            // select the icon directly rather than by a specific Font Awesome
+            // class - FA6 uses "fa-solid"/"fa-regular" etc. instead of a bare
+            // "fa" class, so ".fa" never matched anything here
+            const icon = expander.querySelector("i");
+            if (icon) {
+                icon.classList.toggle("fa-chevron-down");
+                icon.classList.toggle("fa-chevron-up");
+            }
         });
     });
 
@@ -56,7 +62,9 @@ document.addEventListener("DOMContentLoaded", function() {
         if (!matching_card) continue;
 
         // only that card's own subsections (not every subsection on the page)
-        const subheadings = matching_card.querySelectorAll(".settings-section h2");
+        // NOTE: matches h3 too - the generated markup currently uses <h3>
+        // for these subsection headings, see construct_files() below
+        const subheadings = matching_card.querySelectorAll(".settings-section h2, .settings-section h3");
         if (subheadings.length == 0) continue;
 
         const new_ul = document.createElement("ul");
@@ -87,7 +95,13 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
     document.querySelectorAll(".setting-chooser").forEach(chooser => {
-        if (chooser.querySelector(".col-9 h3.name").innerText == "sampling_method") {
+        const nameEl = chooser.querySelector(".col-9 h3.name");
+        // some .setting-chooser elements may not have the expected h3.name
+        // markup (e.g. malformed/partial generation) - skip instead of
+        // crashing, which would otherwise halt every listener registered
+        // after this point, including the final construct_files() call
+        if (!nameEl) return;
+        if (nameEl.innerText == "sampling_method") {
             chooser.querySelector(".form-control").addEventListener("change", function() {
 
                 // find the relevant settings to show/hide based on the sampling method
@@ -159,7 +173,13 @@ function construct_files() {
             ini_file += `<span class='k'>\n[${el.getAttribute("data-category")}]\n</span>`;
         } else if (el.classList.contains("settings-section")) {
             // add any subheadings (e.g. "Stellar Winds")
-            subheading = el.querySelector("h2").innerText;
+            // NOTE: the generated markup currently uses <h3> for these
+            // subsection headings (not <h2> as the original template
+            // implied) - matching both here so this keeps working if that
+            // ever changes back
+            const heading = el.querySelector("h2, h3");
+            if (!heading) continue;
+            subheading = heading.innerText;
             ini_file += '<span class="c1">\n;;;;' + ';'.repeat(subheading.length) + ';;;;\n</span>';
             ini_file += `<span class="c1">;;; ${subheading} ;;;\n</span>`;
             ini_file += '<span class="c1">;;;;' + ';'.repeat(subheading.length) + ';;;;\n</span>';
