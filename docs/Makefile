@@ -56,6 +56,7 @@ clean:
 .PHONY: html
 html: apidoc
 	python create_settings_html.py
+	python create_params_ini.py
 	$(SPHINXBUILD) -b html $(ALLSPHINXOPTS) $(BUILDDIR)/html
 	@echo
 	@echo "Build finished. The HTML pages are in $(BUILDDIR)/html."
