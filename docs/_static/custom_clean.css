@@ -1,6 +1,7 @@
 /* ############################## */
 /* main scheme */
 /* ############################## */
+
 :root {
 
     /* color scheme */
@@ -23,6 +24,7 @@
 .content {
     width: 80%;
     overflow: scroll;
+    background-color: var(--color-background-primary);
 }
 
 /* ############################## */
@@ -40,7 +42,7 @@ footer {
 /* ############################## */
 
 .sidebar-drawer {
-    width: 15%;
+    width: 20%;
     font-size: var(--text-size);
 }
 
@@ -103,8 +105,8 @@ h3 {
      font-size: var(--subsubheader-size);
 }
 
-h5 {
-    font-size: 16px;
+h4 {
+    font-size: 18px;
 }
 
 p, ul {
@@ -124,9 +126,9 @@ pre {
     text-align: center;
 }
 
-/* ############################## */
-/* navigation grid - 2x2 block layout */
-/* ############################## */
+/* #################### */
+/* tom wagg's buttons   */
+/* #################### */
 .toms-nav-container {
     margin: 20px auto;               /* center horizontally with vertical spacing */
     width: 600px;                    /* fixed container width */
@@ -166,7 +168,7 @@ pre {
     border-radius: 1rem;                           /* rounded card corners */
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);      /* subtle drop shadow */
     border: 5px solid var(--color-brand-primary);  /* brand-colored border */
-    margin-bottom: 2rem;                           /* spacing between cards */
+    margin-bottom: 1rem;                           /* spacing between cards */
 }
 
 .card.setting-card .card-header {
@@ -229,6 +231,13 @@ pre {
 
 .setting-chooser .version-added {
     font-style: italic; /* visually distinguish version annotation */
+}
+
+/* ############################## */
+/* setting radio/checkbox labels */
+/* ############################## */
+.setting .col-3 label {
+    cursor: pointer; /* pointer cursor to show label is clickable */
 }
 
 /* ############################## */
@@ -299,13 +308,6 @@ pre {
 .badge-dark       { background-color: #212529; }                   /* near-black */
 
 /* ############################## */
-/* setting radio/checkbox labels */
-/* ############################## */
-.setting .col-3 label {
-    cursor: pointer; /* pointer cursor to show label is clickable */
-}
-
-/* ############################## */
 /* form inputs and selects */
 /* ############################## */
 .form-control {
@@ -342,15 +344,7 @@ select.form-control {
 }
 
 /* ############################## */
-/* BSE dict - preserve whitespace */
-/* ############################## */
-/* Make sure you can see the full BSE dict */
-#python-bse-settings-dictionary .highlight-python pre {
-    white-space: preserve-breaks; /* keep line breaks in long BSE dict code blocks */
-}
-
-/* ############################## */
-/* button component */
+/* comment button */
 /* ############################## */
 .btn {
     padding: 1rem;                          /* generous click target */
@@ -361,6 +355,7 @@ select.form-control {
     color: white;                           /* white label text */
     cursor: pointer;
     transition: 300ms;                      /* smooth hover animation */
+    font-size: var(--text-size);
 }
 
 .btn:hover {

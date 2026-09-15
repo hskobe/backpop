@@ -1,9 +1,6 @@
-.. _inifile:
-
 ###################
 Configuration files
 ###################
-
 
 Introduction
 ==================
@@ -60,8 +57,8 @@ Priors
 .. raw:: html
     :file: ../../_generated/config_insert_priors.html
 
-SSEDict
-~~~~~~~
+SSE Dictionary
+~~~~~~~~~~~~~~
 
 .. raw:: html
     :file: ../../_generated/config_insert_sse.html
@@ -79,18 +76,6 @@ Use the button below to toggle whether to include explanatory comments in the IN
 .. code-block:: ini
 
     backpop_ini
-
-.. raw:: html
-
-    <div id="hide-this-maths">
-
-.. math::
-
-    x = y
-
-.. raw:: html
-
-    </div>
 
 .. raw:: html
 
